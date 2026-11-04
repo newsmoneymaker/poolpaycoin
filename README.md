@@ -1,3 +1,27 @@
+PoolPayCoin (PPC)
+=================
+
+PoolPayCoin is a brand-new, fair-launch, CPU-mineable blockchain: its own genesis block
+(launched 2026-11-04), not a fork of an existing live network. It's a Bitcoin Core 27
+base with RandomX (`rx/pp`) as its proof-of-work instead of SHA-256, built and operated
+by the team behind [pool-pay.com](https://pool-pay.com/).
+
+- **White paper / project site:** https://coin.pool-pay.com/
+- **Mining pool:** https://ppc.pool-pay.com/ ([pool source](https://github.com/newsmoneymaker/ppc-nodejs-pool))
+- **Block explorer:** https://explorer.pool-pay.com/
+- **Miner (poolpayminer, `rx/pp` support):** https://github.com/newsmoneymaker/poolpayminer
+
+See the white paper above for the full technical writeup (supply/emission, the `rx/pp`
+RandomX construction, the ASERT-from-genesis difficulty rationale, and an honest caveat
+on what the custom Argon2 salt does and doesn't defend against). This repository is the
+node daemon (`poolpaycoind`) and CLI (`poolpaycoin-cli`), forked from
+[Satoshi Cash](https://github.com/scashnetwork/scash)'s own Bitcoin Core 27 + RandomX
+base -- see the repository's git history for the exact PoolPayCoin-specific changes on
+top of that base (own genesis/chain params, real 10 PPC subsidy, the ASERT-from-genesis
+fix, and the project's own RandomX salt).
+
+Everything below this point is upstream Bitcoin Core's own generic documentation.
+
 Bitcoin Core integration/staging tree
 =====================================
 
