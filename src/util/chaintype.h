@@ -15,9 +15,9 @@ enum class ChainType {
     SIGNET,
     REGTEST,
     // !SCASH
-    SCASHMAIN,
-    SCASHTESTNET,
-    SCASHREGTEST
+    POOLPAYMAIN,
+    POOLPAYTESTNET,
+    POOLPAYREGTEST
     // !SCASH END
 };
 

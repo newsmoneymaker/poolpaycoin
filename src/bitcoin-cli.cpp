@@ -152,7 +152,7 @@ static int AppInitRPC(int argc, char* argv[])
             strUsage += FormatParagraph(LicenseInfo());
         } else {
             strUsage += "\n"
-                "Usage:  bitcoin-cli [options] <command> [params]  Send command to " PACKAGE_NAME "\n"
+                "Usage:  poolpaycoin-cli [options] <command> [params]  Send command to " PACKAGE_NAME "\n"
                 "or:     bitcoin-cli [options] -named <command> [name=value]...  Send command to " PACKAGE_NAME " (with named arguments)\n"
                 "or:     bitcoin-cli [options] help                List commands\n"
                 "or:     bitcoin-cli [options] help <command>      Get help for a command\n";
@@ -439,12 +439,12 @@ private:
             return " btcregtest";
         case ChainType::MAIN:
             return " btc";
-        case ChainType::SCASHTESTNET:
-            return " scashtestnet";
-        case ChainType::SCASHREGTEST:
-            return " scashregtest";
-        case ChainType::SCASHMAIN:
-            return " scash";
+        case ChainType::POOLPAYTESTNET:
+            return " poolpaytestnet";
+        case ChainType::POOLPAYREGTEST:
+            return " poolpayregtest";
+        case ChainType::POOLPAYMAIN:
+            return " poolpay";
         // !SCASH END
         }
         assert(false);

@@ -15,10 +15,10 @@
 void SetupChainParamsBaseOptions(ArgsManager& argsman)
 {
 // !SCASH
-    argsman.AddArg("-chain=<chain>", "Use the chain <chain> (default: main). Allowed values: scash, scashtestnet, scashregtest, main, test, signet, regtest", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
-    argsman.AddArg("-scashregtest", "Enter scash regression test mode. Equivalent to -chain=scashregtest.", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
-    argsman.AddArg("-scashtestnet", "Use the scash test chain. Equivalent to -chain=scashtestnet.", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
-    argsman.AddArg("-scash", "Use the scash chain. Equivalent to -chain=scash.", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
+    argsman.AddArg("-chain=<chain>", "Use the chain <chain> (default: main). Allowed values: poolpay, poolpaytestnet, poolpayregtest, main, test, signet, regtest", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
+    argsman.AddArg("-poolpayregtest", "Enter poolpay regression test mode. Equivalent to -chain=poolpayregtest.", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
+    argsman.AddArg("-poolpaytestnet", "Use the poolpay test chain. Equivalent to -chain=poolpaytestnet.", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
+    argsman.AddArg("-poolpay", "Use the poolpay chain. Equivalent to -chain=poolpay.", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
 // !SCASH END
     argsman.AddArg("-regtest", "Enter regression test mode, which uses a special chain in which blocks can be solved instantly. "
                  "This is intended for regression testing tools and app development. Equivalent to -chain=regtest.", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
@@ -54,12 +54,12 @@ std::unique_ptr<CBaseChainParams> CreateBaseChainParams(const ChainType chain)
         return std::make_unique<CBaseChainParams>("btcsignet", 38332, 38334);
     case ChainType::REGTEST:
         return std::make_unique<CBaseChainParams>("btcregtest", 18443, 18445);
-    case ChainType::SCASHMAIN:
-        return std::make_unique<CBaseChainParams>("scash", 8342, 8344);
-    case ChainType::SCASHTESTNET:
-        return std::make_unique<CBaseChainParams>("scashtestnet", 18342, 18344);
-    case ChainType::SCASHREGTEST:
-        return std::make_unique<CBaseChainParams>("scashregtest", 18453, 18455);
+    case ChainType::POOLPAYMAIN:
+        return std::make_unique<CBaseChainParams>("poolpay", 8350, 8352);
+    case ChainType::POOLPAYTESTNET:
+        return std::make_unique<CBaseChainParams>("poolpaytestnet", 18350, 18352);
+    case ChainType::POOLPAYREGTEST:
+        return std::make_unique<CBaseChainParams>("poolpayregtest", 18453, 18455);
     // !SCASH END
     }
     assert(false);

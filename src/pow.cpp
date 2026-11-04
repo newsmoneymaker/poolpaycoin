@@ -114,7 +114,10 @@ static uint32_t GetNextASERTWorkRequired(const CBlockIndex *pindexPrev,
     // as per the absolute formulation of ASERT.
     // This is somewhat counterintuitive since it is referred to as the anchor timestamp, but
     // as per the formula the timestamp of block M-1 must be used if the anchor is M.
-    assert(pindexPrev->pprev != nullptr);
+    // PoolPayCoin activates ASERT from the genesis block itself (anchorParams.nHeight == 0), unlike
+    // BCH's deployment height deep in an existing chain -- pindexPrev can legitimately BE genesis
+    // (no pprev) when mining block 1, and nothing below actually dereferences pindexPrev->pprev
+    // (anchorParams.nPrevBlockTime already carries the synthetic pre-genesis timestamp).
 
     const arith_uint256 refBlockTarget = arith_uint256().SetCompact(anchorParams.nBits);
 
@@ -437,7 +440,7 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
 // !SCASH
 
 // Seed string contains an epoch integer and is sha256d hashed to derive the seed hash (RandomX key).
-static const char *RANDOMX_EPOCH_SEED_STRING = "Scash/RandomX/Epoch/%d";
+static const char *RANDOMX_EPOCH_SEED_STRING = "PoolPay/RandomX/Epoch/%d";
 
 // Epoch is Unix time stamp in seconds divided by epoch duration in seconds.
 uint32_t GetEpoch(uint32_t nTimestamp, uint32_t nDuration) {

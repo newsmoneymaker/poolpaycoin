@@ -516,7 +516,7 @@ fs::path static StartupShortcutPath()
 {
     ChainType chain = gArgs.GetChainType();
     // !SCASH
-    if (chain == ChainType::SCASHMAIN)
+    if (chain == ChainType::POOLPAYMAIN)
         return GetSpecialFolderPath(CSIDL_STARTUP) / "Scash.lnk";
     return GetSpecialFolderPath(CSIDL_STARTUP) / fs::u8path(strprintf("Scash (%s).lnk", ChainTypeToString(chain)));
     // !SCASH END
@@ -599,7 +599,7 @@ fs::path static GetAutostartFilePath()
 {
     ChainType chain = gArgs.GetChainType();
     // !SCASH
-    if (chain == ChainType::SCASHMAIN)
+    if (chain == ChainType::POOLPAYMAIN)
         return GetAutostartDir() / "scash.desktop";
     return GetAutostartDir() / fs::u8path(strprintf("scash-%s.desktop", ChainTypeToString(chain)));
     // !SCASH END
@@ -647,7 +647,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
         // !SCASH
-        if (chain == ChainType::SCASHMAIN)
+        if (chain == ChainType::POOLPAYMAIN)
             optionFile << "Name=Scash\n";
         else
             optionFile << strprintf("Name=Scash (%s)\n", ChainTypeToString(chain));

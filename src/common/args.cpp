@@ -36,13 +36,13 @@
 #include <utility>
 #include <variant>
 
-const char * const BITCOIN_CONF_FILENAME = "scash.conf";
+const char * const BITCOIN_CONF_FILENAME = "poolpay.conf";
 const char * const BITCOIN_SETTINGS_FILENAME = "settings.json";
 
 ArgsManager gArgs;
 
 // !SCASH
-static bool fExecutableNamedScash;
+static bool fExecutableNamedPoolPay;
 // !SCASH END
 
 /**
@@ -148,7 +148,7 @@ std::set<std::string> ArgsManager::GetUnsuitableSectionOnlyArgs() const
 
     // if it's okay to use the default section for this network, don't worry
     // !SCASH
-    if (m_network == ChainTypeToString(ChainType::SCASHMAIN) || m_network == ChainTypeToString(ChainType::MAIN)) return std::set<std::string> {};
+    if (m_network == ChainTypeToString(ChainType::POOLPAYMAIN) || m_network == ChainTypeToString(ChainType::MAIN)) return std::set<std::string> {};
     // !SCASH END
 
     for (const auto& arg : m_network_only_args) {
@@ -164,9 +164,9 @@ std::list<SectionInfo> ArgsManager::GetUnrecognizedSections() const
     // Section names to be recognized in the config file.
     static const std::set<std::string> available_sections{
         // !SCASH
-        ChainTypeToString(ChainType::SCASHREGTEST),
-        ChainTypeToString(ChainType::SCASHTESTNET),
-        ChainTypeToString(ChainType::SCASHMAIN),
+        ChainTypeToString(ChainType::POOLPAYREGTEST),
+        ChainTypeToString(ChainType::POOLPAYTESTNET),
+        ChainTypeToString(ChainType::POOLPAYMAIN),
         // !SCASH END
         ChainTypeToString(ChainType::REGTEST),
         ChainTypeToString(ChainType::SIGNET),
@@ -193,7 +193,7 @@ bool ArgsManager::ParseParameters(int argc, const char* const argv[], std::strin
 
     // !SCASH
     std::string filename = ToLower(fs::PathFromString(argv[0]).lexically_normal().filename().string());
-    fExecutableNamedScash = filename.find("scash") != std::string::npos;
+    fExecutableNamedPoolPay = filename.find("poolpay") != std::string::npos;
     // !SCASH END
 
     for (int i = 1; i < argc; i++) {
@@ -707,7 +707,7 @@ fs::path GetDefaultDataDir()
 #ifdef WIN32
     // Windows
     // !SCASH
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "Scash";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "PoolPayCoin";
     // !SCASH END
 #else
     fs::path pathRet;
@@ -719,12 +719,12 @@ fs::path GetDefaultDataDir()
 #ifdef MAC_OSX
     // macOS
     // !SCASH
-    return pathRet / "Library/Application Support/Scash";
+    return pathRet / "Library/Application Support/PoolPayCoin";
     // !SCASH END
 #else
     // Unix-like
     // !SCASH
-    return pathRet / ".scash";
+    return pathRet / ".poolpay";
     // !SCASH END
 #endif
 #endif
@@ -792,19 +792,19 @@ std::variant<ChainType, std::string> ArgsManager::GetChainArg() const
     if (fTestNet) return ChainType::TESTNET;
 
     // !SCASH
-    const bool fScashMain = get_net("-scash");
-    const bool fScashRegTest = get_net("-scashregtest");
-    const bool fScashTestnet = get_net("-scashtestnet");
+    const bool fPoolPayMain = get_net("-poolpay");
+    const bool fPoolPayRegTest = get_net("-poolpayregtest");
+    const bool fPoolPayTestnet = get_net("-poolpaytestnet");
 
-    if ((int)chain_arg.has_value() + (int)fScashMain + (int)fScashTestnet + (int)fScashRegTest + (int)fRegTest + (int)fSigNet + (int)fTestNet > 1) {
-        throw std::runtime_error("Invalid combination of -scash, -scashregtest, -scashtestnet, -regtest, -signet, -testnet and -chain. Can use at most one.");
+    if ((int)chain_arg.has_value() + (int)fPoolPayMain + (int)fPoolPayTestnet + (int)fPoolPayRegTest + (int)fRegTest + (int)fSigNet + (int)fTestNet > 1) {
+        throw std::runtime_error("Invalid combination of -poolpay, -poolpayregtest, -poolpaytestnet, -regtest, -signet, -testnet and -chain. Can use at most one.");
     }
 
-    if (fScashMain) return ChainType::SCASHMAIN;
-    if (fScashRegTest) return ChainType::SCASHREGTEST;
-    if (fScashTestnet) return ChainType::SCASHTESTNET;
+    if (fPoolPayMain) return ChainType::POOLPAYMAIN;
+    if (fPoolPayRegTest) return ChainType::POOLPAYREGTEST;
+    if (fPoolPayTestnet) return ChainType::POOLPAYTESTNET;
 
-    if (fExecutableNamedScash) return ChainType::SCASHMAIN;
+    if (fExecutableNamedPoolPay) return ChainType::POOLPAYMAIN;
     // !SCASH END
 
     return ChainType::MAIN;
@@ -813,7 +813,7 @@ std::variant<ChainType, std::string> ArgsManager::GetChainArg() const
 bool ArgsManager::UseDefaultSection(const std::string& arg) const
 {
     // !SCASH
-    return m_network == ChainTypeToString(ChainType::SCASHMAIN) || m_network == ChainTypeToString(ChainType::MAIN) || m_network_only_args.count(arg) == 0;
+    return m_network == ChainTypeToString(ChainType::POOLPAYMAIN) || m_network == ChainTypeToString(ChainType::MAIN) || m_network_only_args.count(arg) == 0;
     // !SCASH END
 }
 

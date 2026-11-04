@@ -18,9 +18,9 @@ static const struct {
     const int iconColorSaturationReduction;
 } network_styles[] = {
     // !SCASH
-    {ChainType::SCASHMAIN, QAPP_APP_NAME_DEFAULT, 0, 0},
-    {ChainType::SCASHTESTNET, QAPP_APP_NAME_SCASH_TESTNET, 180, 30},
-    {ChainType::SCASHREGTEST, QAPP_APP_NAME_SCASH_REGTEST, 80, 30},
+    {ChainType::POOLPAYMAIN, QAPP_APP_NAME_DEFAULT, 0, 0},
+    {ChainType::POOLPAYTESTNET, QAPP_APP_NAME_POOLPAY_TESTNET, 180, 30},
+    {ChainType::POOLPAYREGTEST, QAPP_APP_NAME_POOLPAY_REGTEST, 80, 30},
     {ChainType::MAIN, QAPP_APP_NAME_BTC, 0, 0},
     // !SCASH END
     {ChainType::TESTNET, QAPP_APP_NAME_TESTNET, 70, 30},
@@ -85,7 +85,7 @@ NetworkStyle::NetworkStyle(const QString &_appName, const int iconColorHueShift,
 const NetworkStyle* NetworkStyle::instantiate(const ChainType networkId)
 {
     // !SCASH
-    std::string titleAddText = networkId == ChainType::SCASHMAIN ? "" : strprintf("[%s]", ChainTypeToString(networkId));
+    std::string titleAddText = networkId == ChainType::POOLPAYMAIN ? "" : strprintf("[%s]", ChainTypeToString(networkId));
     // !SCASH END
     for (const auto& network_style : network_styles) {
         if (networkId == network_style.networkId) {

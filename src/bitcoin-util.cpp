@@ -60,7 +60,7 @@ static int AppInitUtil(ArgsManager& args, int argc, char* argv[])
             strUsage += FormatParagraph(LicenseInfo());
         } else {
             strUsage += "\n"
-                "Usage:  bitcoin-util [options] [commands]  Do stuff\n";
+                "Usage:  poolpaycoin-util [options] [commands]  Do stuff\n";
             strUsage += "\n" + args.GetHelpMessage();
         }
 

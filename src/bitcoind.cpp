@@ -9,6 +9,12 @@
 
 #include <chainparams.h>
 #include <clientversion.h>
+#include <pow.h>
+#include <primitives/block.h>
+#include <util/chaintype.h>
+#include <util/strencodings.h>
+
+#include <iostream>
 #include <common/args.h>
 #include <common/init.h>
 #include <common/system.h>
@@ -141,7 +147,7 @@ static bool ProcessInitCommands(ArgsManager& args)
         if (args.IsArgSet("-version")) {
             strUsage += FormatParagraph(LicenseInfo());
         } else {
-            strUsage += "\nUsage:  bitcoind [options]                     Start " PACKAGE_NAME "\n"
+            strUsage += "\nUsage:  poolpaycoind [options]                     Start " PACKAGE_NAME "\n"
                 "\n";
             strUsage += args.GetHelpMessage();
         }
@@ -151,6 +157,47 @@ static bool ProcessInitCommands(ArgsManager& args)
     }
 
     return false;
+}
+
+// One-off genesis-mining helper for PoolPayCoin (-minegenesis, -minetime=<unix>, -minebits=<hex nBits>).
+// Brute-forces nNonce until CheckProofOfWorkRandomX succeeds, then prints the four values that need to
+// replace the TODO placeholders in kernel/chainparams.cpp's CPoolPayMainParams. Not wired into normal node
+// startup in any way -- exits immediately after printing, never falls through to AppInit.
+static int RunGenesisMiner(ArgsManager& args)
+{
+    SelectParams(args.GetChainType());
+    const CChainParams& params = Params();
+    const Consensus::Params& consensus = params.GetConsensus();
+
+    uint32_t nTime = (uint32_t)args.GetIntArg("-minetime", 1793707200);
+    uint32_t nBits = (uint32_t)args.GetIntArg("-minebits", 0x1e0fffff);
+
+    std::cout << "Mining PoolPayCoin genesis: nTime=" << nTime << " nBits=" << strprintf("%08x", nBits)
+              << " epochDuration=" << consensus.nRandomXEpochDuration << std::endl;
+
+    for (uint32_t nNonce = 0; ; ++nNonce) {
+        CBlock block = CreatePoolPayGenesisBlockForMining(nTime, nNonce, nBits);
+        CBlockHeader& header = block;
+        uint256 outHash;
+        if (CheckProofOfWorkRandomX(header, consensus, POW_VERIFY_MINING, &outHash)) {
+            block.hashRandomX = outHash;
+            uint256 blockHash = GetHashOfPoolPayGenesisBlock(block);
+            std::cout << "FOUND genesis!\n"
+                      << "  nTime        = " << nTime << "\n"
+                      << "  nNonce       = " << nNonce << "\n"
+                      << "  hashRandomX  = " << outHash.GetHex() << "\n"
+                      << "  hashGenesisBlock = " << blockHash.GetHex() << "\n"
+                      << "  hashMerkleRoot   = " << block.hashMerkleRoot.GetHex() << std::endl;
+            return EXIT_SUCCESS;
+        }
+        if (nNonce % 2000 == 0) {
+            std::cout << "  ... tried nonce " << nNonce << std::endl;
+        }
+        if (nNonce == std::numeric_limits<uint32_t>::max()) {
+            std::cout << "Exhausted 32-bit nonce space without success at this nTime; bump -minetime and retry." << std::endl;
+            return EXIT_FAILURE;
+        }
+    }
 }
 
 static bool AppInit(NodeContext& node)
@@ -269,6 +316,10 @@ MAIN_FUNCTION
     if (!ParseArgs(args, argc, argv)) return EXIT_FAILURE;
     // Process early info return commands such as -help or -version
     if (ProcessInitCommands(args)) return EXIT_SUCCESS;
+
+    if (args.GetBoolArg("-minegenesis", false)) {
+        return RunGenesisMiner(args);
+    }
 
     // Start application
     if (!AppInit(node) || !Assert(node.shutdown)->wait()) {

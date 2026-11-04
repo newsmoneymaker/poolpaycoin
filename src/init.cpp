@@ -159,7 +159,7 @@ static const char* DEFAULT_ASMAP_FILENAME="ip_asn.map";
  * The PID file facilities.
  */
 // !SCASH
-static const char* BITCOIN_PID_FILENAME = "scashd.pid";
+static const char* BITCOIN_PID_FILENAME = "poolpayd.pid";
 // !SCASH END
 /**
  * True if this process has created a PID file.
@@ -452,6 +452,11 @@ void SetupServerArgs(ArgsManager& argsman)
     SetupHelpOptions(argsman);
     argsman.AddArg("-help-debug", "Print help message with debugging options and exit", ArgsManager::ALLOW_ANY, OptionsCategory::DEBUG_TEST); // server-only for now
 
+    // One-off PoolPayCoin genesis-mining helper flags (see bitcoind.cpp's RunGenesisMiner).
+    argsman.AddArg("-minegenesis", "Mine the PoolPayCoin genesis block and exit (debug one-off tool)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::DEBUG_TEST);
+    argsman.AddArg("-minetime=<n>", "Unix timestamp to use for -minegenesis", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::DEBUG_TEST);
+    argsman.AddArg("-minebits=<n>", "nBits (decimal or 0x-prefixed hex) to use for -minegenesis", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::DEBUG_TEST);
+
     init::AddLoggingArgs(argsman);
 
     const auto defaultBaseParams = CreateBaseChainParams(ChainType::MAIN);
@@ -464,12 +469,12 @@ void SetupServerArgs(ArgsManager& argsman)
     const auto regtestChainParams = CreateChainParams(argsman, ChainType::REGTEST);
 
     // !SCASH
-    const auto scashRegtestBaseParams = CreateBaseChainParams(ChainType::SCASHREGTEST);
-    const auto scashTestnetBaseParams = CreateBaseChainParams(ChainType::SCASHTESTNET);
-    const auto scashMainBaseParams = CreateBaseChainParams(ChainType::SCASHMAIN);
-    const auto scashRegtestChainParams = CreateChainParams(argsman, ChainType::SCASHREGTEST);
-    const auto scashTestnetChainParams = CreateChainParams(argsman, ChainType::SCASHTESTNET);
-    const auto scashMainChainParams = CreateChainParams(argsman, ChainType::SCASHMAIN);
+    const auto poolpayRegtestBaseParams = CreateBaseChainParams(ChainType::POOLPAYREGTEST);
+    const auto poolpayTestnetBaseParams = CreateBaseChainParams(ChainType::POOLPAYTESTNET);
+    const auto poolpayMainBaseParams = CreateBaseChainParams(ChainType::POOLPAYMAIN);
+    const auto poolpayRegtestChainParams = CreateChainParams(argsman, ChainType::POOLPAYREGTEST);
+    const auto poolpayTestnetChainParams = CreateChainParams(argsman, ChainType::POOLPAYTESTNET);
+    const auto poolpayMainChainParams = CreateChainParams(argsman, ChainType::POOLPAYMAIN);
     // !SCASH END
 
     // Hidden Options
@@ -537,7 +542,7 @@ void SetupServerArgs(ArgsManager& argsman)
     argsman.AddArg("-asmap=<file>", strprintf("Specify asn mapping used for bucketing of the peers (default: %s). Relative paths will be prefixed by the net-specific datadir location.", DEFAULT_ASMAP_FILENAME), ArgsManager::ALLOW_ANY, OptionsCategory::CONNECTION);
     argsman.AddArg("-bantime=<n>", strprintf("Default duration (in seconds) of manually configured bans (default: %u)", DEFAULT_MISBEHAVING_BANTIME), ArgsManager::ALLOW_ANY, OptionsCategory::CONNECTION);
 // !SCASH
-    argsman.AddArg("-bind=<addr>[:<port>][=onion]", strprintf("Bind to given address and always listen on it (default: 0.0.0.0). Use [host]:port notation for IPv6. Append =onion to tag any incoming connections to that address and port as incoming Tor connections (default: 127.0.0.1:%u=onion, testnet: 127.0.0.1:%u=onion, regtest: 127.0.0.1:%u=onion)", scashMainBaseParams->OnionServiceTargetPort(), scashTestnetBaseParams->OnionServiceTargetPort(), scashRegtestBaseParams->OnionServiceTargetPort()), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
+    argsman.AddArg("-bind=<addr>[:<port>][=onion]", strprintf("Bind to given address and always listen on it (default: 0.0.0.0). Use [host]:port notation for IPv6. Append =onion to tag any incoming connections to that address and port as incoming Tor connections (default: 127.0.0.1:%u=onion, testnet: 127.0.0.1:%u=onion, regtest: 127.0.0.1:%u=onion)", poolpayMainBaseParams->OnionServiceTargetPort(), poolpayTestnetBaseParams->OnionServiceTargetPort(), poolpayRegtestBaseParams->OnionServiceTargetPort()), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
 // !SCASH END
     argsman.AddArg("-cjdnsreachable", "If set, then this host is configured for CJDNS (connecting to fc00::/8 addresses would lead us to the CJDNS network, see doc/cjdns.md) (default: 0)", ArgsManager::ALLOW_ANY, OptionsCategory::CONNECTION);
     argsman.AddArg("-connect=<ip>", "Connect only to the specified node; -noconnect disables automatic connections (the rules for this peer are the same as for -addnode). This option can be specified multiple times to connect to multiple nodes.", ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
@@ -565,7 +570,7 @@ void SetupServerArgs(ArgsManager& argsman)
     // TODO: remove the sentence "Nodes not using ... incoming connections." once the changes from
     // https://github.com/bitcoin/bitcoin/pull/23542 have become widespread.
 // !SCASH
-    argsman.AddArg("-port=<port>", strprintf("Listen for connections on <port>. Nodes not using the default ports (default: %u, testnet: %u, regtest: %u) are unlikely to get incoming connections. Not relevant for I2P (see doc/i2p.md).", scashMainChainParams->GetDefaultPort(), scashTestnetChainParams->GetDefaultPort(), scashRegtestChainParams->GetDefaultPort()), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
+    argsman.AddArg("-port=<port>", strprintf("Listen for connections on <port>. Nodes not using the default ports (default: %u, testnet: %u, regtest: %u) are unlikely to get incoming connections. Not relevant for I2P (see doc/i2p.md).", poolpayMainChainParams->GetDefaultPort(), poolpayTestnetChainParams->GetDefaultPort(), poolpayRegtestChainParams->GetDefaultPort()), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
 // !SCASH END
     argsman.AddArg("-proxy=<ip:port>", "Connect through SOCKS5 proxy, set -noproxy to disable (default: disabled)", ArgsManager::ALLOW_ANY | ArgsManager::DISALLOW_ELISION, OptionsCategory::CONNECTION);
     argsman.AddArg("-proxyrandomize", strprintf("Randomize credentials for every proxy connection. This enables Tor stream isolation (default: %u)", DEFAULT_PROXYRANDOMIZE), ArgsManager::ALLOW_ANY, OptionsCategory::CONNECTION);
@@ -681,7 +686,7 @@ void SetupServerArgs(ArgsManager& argsman)
     argsman.AddArg("-rpccookiefile=<loc>", "Location of the auth cookie. Relative paths will be prefixed by a net-specific datadir location. (default: data dir)", ArgsManager::ALLOW_ANY, OptionsCategory::RPC);
     argsman.AddArg("-rpcpassword=<pw>", "Password for JSON-RPC connections", ArgsManager::ALLOW_ANY | ArgsManager::SENSITIVE, OptionsCategory::RPC);
 // !SCASH
-    argsman.AddArg("-rpcport=<port>", strprintf("Listen for JSON-RPC connections on <port> (default: %u, testnet: %u, regtest: %u)", scashMainBaseParams->RPCPort(), scashTestnetBaseParams->RPCPort(), scashRegtestBaseParams->RPCPort()), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::RPC);
+    argsman.AddArg("-rpcport=<port>", strprintf("Listen for JSON-RPC connections on <port> (default: %u, testnet: %u, regtest: %u)", poolpayMainBaseParams->RPCPort(), poolpayTestnetBaseParams->RPCPort(), poolpayRegtestBaseParams->RPCPort()), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::RPC);
 // !SCASH END
     argsman.AddArg("-rpcservertimeout=<n>", strprintf("Timeout during HTTP requests (default: %d)", DEFAULT_HTTP_SERVER_TIMEOUT), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::RPC);
     argsman.AddArg("-rpcthreads=<n>", strprintf("Set the number of threads to service RPC calls (default: %d)", DEFAULT_HTTP_THREADS), ArgsManager::ALLOW_ANY, OptionsCategory::RPC);
@@ -1076,7 +1081,7 @@ bool AppInitParameterInteraction(const ArgsManager& args)
     }
 
     // !SCASH
-    if (chain == ChainType::SCASHMAIN || chain == ChainType::SCASHREGTEST || chain == ChainType::SCASHTESTNET) {
+    if (chain == ChainType::POOLPAYMAIN || chain == ChainType::POOLPAYREGTEST || chain == ChainType::POOLPAYTESTNET) {
         if (args.GetBoolArg("-mempoolfullrbf", DEFAULT_MEMPOOL_FULL_RBF)) {
             return InitError(Untranslated("RBF is not supported."));
         }
@@ -1151,7 +1156,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
     // !SCASH
     if (chainparams.GetConsensus().fPowRandomX) {
         g_isRandomX = true;
-        LogPrintf("%s: Scash RandomX proof-of-work active\n", __func__);
+        LogPrintf("%s: PoolPay RandomX proof-of-work active\n", __func__);
         randomx_flags flags = randomx_get_flags();
         if (flags & RANDOMX_FLAG_ARGON2_AVX2) {
             LogPrintf("- Argon2 implementation: AVX2\n");

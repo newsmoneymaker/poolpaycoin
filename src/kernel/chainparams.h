@@ -163,9 +163,9 @@ public:
     static std::unique_ptr<const CChainParams> TestNet();
 
     // !SCASH
-    static std::unique_ptr<const CChainParams> ScashRegTest(const RegTestOptions& options);
-    static std::unique_ptr<const CChainParams> ScashTestNet();
-    static std::unique_ptr<const CChainParams> ScashMain();
+    static std::unique_ptr<const CChainParams> PoolPayRegTest(const RegTestOptions& options);
+    static std::unique_ptr<const CChainParams> PoolPayTestNet();
+    static std::unique_ptr<const CChainParams> PoolPayMain();
     // !SCASH END
 
 protected:
@@ -189,5 +189,12 @@ protected:
     std::vector<AssumeutxoData> m_assumeutxo_data;
     ChainTxData chainTxData;
 };
+
+// One-off genesis-mining helper (see poolpaycoin-project memory): builds the exact same mainnet genesis
+// CBlock template (same pszTimestamp/pubkey as CPoolPayMainParams) for a candidate (nTime, nNonce, nBits)
+// so a standalone miner loop in bitcoind.cpp (-minegenesis) can brute-force nNonce without duplicating the
+// pszTimestamp/pubkey literals. Remove once the real genesis values are locked into CPoolPayMainParams.
+CBlock CreatePoolPayGenesisBlockForMining(uint32_t nTime, uint32_t nNonce, uint32_t nBits);
+uint256 GetHashOfPoolPayGenesisBlock(const CBlock& genesis);
 
 #endif // BITCOIN_KERNEL_CHAINPARAMS_H

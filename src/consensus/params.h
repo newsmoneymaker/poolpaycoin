@@ -7,6 +7,7 @@
 #ifndef BITCOIN_CONSENSUS_PARAMS_H
 #define BITCOIN_CONSENSUS_PARAMS_H
 
+#include <consensus/amount.h>
 #include <uint256.h>
 
 #include <chrono>
@@ -79,6 +80,8 @@ struct BIP9Deployment {
 struct Params {
     uint256 hashGenesisBlock;
     int nSubsidyHalvingInterval;
+    /** Block subsidy before any halving (defaults to Bitcoin's 50 COIN; PoolPayCoin overrides this to 10 COIN). */
+    CAmount nInitialSubsidy = 50 * COIN;
     /**
      * Hashes of blocks that
      * - are known to be consensus valid, and

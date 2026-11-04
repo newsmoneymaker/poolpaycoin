@@ -547,30 +547,38 @@ std::unique_ptr<const CChainParams> CChainParams::TestNet()
 // !SCASH
 
 // Compute block hash over entire header (including RandomX fields) even if global flag is not set
-static uint256 GetHashOfScashGenesisBlock(const CBlock& genesis) {
+uint256 GetHashOfPoolPayGenesisBlock(const CBlock& genesis) {
     CBlockHeader rx_blockHeader(genesis);
     unsigned char hash[32];
     CHash256().Write({(unsigned char *)&rx_blockHeader, sizeof(rx_blockHeader)}).Finalize(hash);
     return uint256(hash);
 }
 
-static CBlock CreateScashGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
+static CBlock CreatePoolPayGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "22/Feb/2024 S&P 5087.03 @elonmusk 1760819426688115087 Congrats";
-    const CScript genesisOutputScript = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
+    const char* pszTimestamp = "PoolPayCoin genesis - 03/Nov/2026 - mined for pool-pay.com, no premine, rx/pp RandomX";
+    const CScript genesisOutputScript = CScript() << ParseHex("045ee0c8b1dd56cdf5a6807699f244ef05991d162df980394539ffc5a734abd6e920cc995a074f4959f80351015fcbf04d3e3cc57acce3717510dfdf08332050c1") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
+}
+
+CBlock CreatePoolPayGenesisBlockForMining(uint32_t nTime, uint32_t nNonce, uint32_t nBits)
+{
+    return CreatePoolPayGenesisBlock(nTime, nNonce, nBits, 1, 10 * COIN);
 }
 
 /**
  * Main network on which people trade goods and services.
  */
-class CScashMainParams : public CChainParams {
+class CPoolPayMainParams : public CChainParams {
 public:
-    CScashMainParams() {
-        m_chain_type = ChainType::SCASHMAIN;
+    CPoolPayMainParams() {
+        m_chain_type = ChainType::POOLPAYMAIN;
         consensus.signet_blocks = false;
         consensus.signet_challenge.clear();
-        consensus.nSubsidyHalvingInterval = 210000;
+        // 21,000,000 PPC asymptotic cap: reward*interval*2 = 10*1,050,000*2 = 21,000,000 (same ratio Bitcoin
+        // itself uses, scaled for our 5x-faster 120s block time so the real-time halving cadence stays ~4y).
+        consensus.nSubsidyHalvingInterval = 1050000;
+        consensus.nInitialSubsidy = 10 * COIN;
         consensus.BIP34Height = 1; // Always active unless overridden
         consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 1;  // Always active unless overridden
@@ -579,8 +587,8 @@ public:
         consensus.SegwitHeight = 0; // Always active unless overridden
         consensus.MinBIP9WarningHeight = 0;
         consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
-        consensus.nPowTargetTimespan = 14 * 24 * 60 * 60; // two weeks
-        consensus.nPowTargetSpacing = 10 * 60;
+        consensus.nPowTargetTimespan = 14 * 24 * 60 * 60; // unused in practice: ASERT is active from block 1 below
+        consensus.nPowTargetSpacing = 120; // 2-minute blocks (fleet-standard for RandomX coins here, not Bitcoin's 10min)
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1815; // 90% of 2016
@@ -599,60 +607,58 @@ public:
         consensus.nMinimumChainWork = uint256{};
         consensus.defaultAssumeValid = uint256{};
 
-        // The half life for the ASERT DAA. For every (nASERTHalfLife) seconds behind schedule the blockchain gets,
-        // difficulty is cut in half. Doubled if blocks are ahead of schedule.
-        // Two days
-        consensus.nASERTHalfLife = 2 * 24 * 60 * 60;
-        consensus.nASERTActivationHeight = 21000;
+        // ASERT active from the very first real block (height 1), deliberately NOT a multi-day half-life like
+        // scash's 2-day value -- a brand-new coin with zero existing hashrate is exactly the botnet/farm-dump
+        // scenario ASERT needs to react FAST to, not slowly. 2-hour half-life = ~60 blocks at 120s spacing.
+        consensus.nASERTHalfLife = 2 * 60 * 60;
+        consensus.nASERTActivationHeight = 1;
         consensus.asertAnchorParams = Consensus::Params::ASERTAnchor{
-            18144,        // anchor block height
-            0x1c7b9d90,   // anchor block nBits
-            1712987784,   // anchor block previous block timestamp
+            0,            // anchor block height = genesis itself (no real chain history exists yet)
+            0x1e0fffff,   // anchor block nBits = genesis nBits (must match genesis's own nBits below)
+            1793707080,   // genesis.nTime (1793707200) - nPowTargetSpacing (120), locked once genesis was mined 2026-11-04
         };
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
-         * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
-         * a large 32-bit integer with any alignment.
+         * Freshly generated for this chain (openssl rand -hex 4, 2026-11-03) -- NOT scash's or any other
+         * known chain's magic, so a stray connection from another network is rejected immediately.
          */
-        pchMessageStart[0] = 0xfa;
-        pchMessageStart[1] = 0xbf;
-        pchMessageStart[2] = 0xb5;
-        pchMessageStart[3] = 0xda;
-        nDefaultPort = 8343;
+        pchMessageStart[0] = 0x7a;
+        pchMessageStart[1] = 0xc1;
+        pchMessageStart[2] = 0x44;
+        pchMessageStart[3] = 0xa1;
+        nDefaultPort = 8351;
         nPruneAfterHeight = 100000;
         m_assumed_blockchain_size = 0;
         m_assumed_chain_state_size = 0;
 
         consensus.fPowRandomX = true;
         consensus.nRandomXEpochDuration = 7 * 24 * 60 * 60;     // one week
-        genesis = CreateScashGenesisBlock(1708650456, 20076863, 0x1e0fffff, 1, 50 * COIN);
-        genesis.hashRandomX = uint256S("33c450e0152826e3a8948b01464cf9182344a1544b3ddcf6153dd04b62938d01");
-        consensus.hashGenesisBlock = GetHashOfScashGenesisBlock(genesis);
-        assert(consensus.hashGenesisBlock == uint256S("e3bf1597a568216022dbda6a0945f09b005d19f041e7158c3cbca9d4029ee82d"));
-        assert(genesis.hashMerkleRoot == uint256S("2f7b90fafd8247ee73d213d49699fcfe12a37c608f1d9d1c06f10e43cb6426c6"));
+        // Real genesis, mined 2026-11-04 via -minegenesis (nNonce found after ~1,570,681 RandomX attempts).
+        genesis = CreatePoolPayGenesisBlock(1793707200, 1570681, 0x1e0fffff, 1, 10 * COIN);
+        genesis.hashRandomX = uint256S("6f1a5b8dc0fa4eeb91b5d5f421c2665ca82cd3bed0f5468c28c1a61b2c0aa0a5");
+        consensus.hashGenesisBlock = GetHashOfPoolPayGenesisBlock(genesis);
+        assert(consensus.hashGenesisBlock == uint256S("e8e66069edc2c233dc10559b7e6fa840abb05a7d09f329020a7502ee15300cf0"));
+        assert(genesis.hashMerkleRoot == uint256S("25c7e708a621b36e92654858e02216f088156df066e7fa2c109406e18cf9a265"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,0);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,55);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,20);
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,183);
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
 
-        bech32_hrp = "scash";
+        bech32_hrp = "ppc";
 
         fDefaultConsistencyChecks = false;
         m_is_mockable_chain = false;
 
+        // No checkpoints yet -- can't checkpoint chain history that doesn't exist yet. Add real ones here
+        // once a real height is mined and trusted (see [[poolpaycoin-project]] memory for the plan).
         checkpointData = {
             {
-                { 111, uint256S("8ae1c9355d55513c407c75fbfc5e10aea64654caaae0c94ccb16572cb0e04d17")},
-                { 488, uint256S("9b2583116dd317fee639fed59c698ef91afcd5ab78f4e5582d05b221105eeb00")},
-                { 1433, uint256S("d0c5d5f767374b2e514a7fcc3974e0506085e4260dc43d6b349dfcf5a6969fca")},
-                { 11111, uint256S("321992e4b3b1c13f9a8ae1aa9ce926e795c2f3dbedd3159f157150653683b583")},
-                { 19000, uint256S("6153ba28cc8d030277e308d12642a28ebc94eceb57f447e4ed0ad692b10d3de3")},
             }
         };
 
@@ -670,10 +676,10 @@ public:
 /**
  * Testnet: public test network which is reset from time to time.
  */
-class CScashTestNetParams : public CChainParams {
+class CPoolPayTestNetParams : public CChainParams {
 public:
-    CScashTestNetParams() {
-        m_chain_type = ChainType::SCASHTESTNET;
+    CPoolPayTestNetParams() {
+        m_chain_type = ChainType::POOLPAYTESTNET;
         consensus.signet_blocks = false;
         consensus.signet_challenge.clear();
         consensus.nSubsidyHalvingInterval = 210000;
@@ -731,7 +737,7 @@ public:
         genesis = CreateGenesisBlock(1296688602, 6107, 0x1e7fffff, 1, 50 * COIN);
         genesis.hashRandomX = uint256S("e848dddfb604a4b1783c8a38b6db5179ccd6911331f2be18bfec02522d95af86");
         consensus.hashGenesisBlock = genesis.GetHash();
-        consensus.hashGenesisBlock = GetHashOfScashGenesisBlock(genesis);
+        consensus.hashGenesisBlock = GetHashOfPoolPayGenesisBlock(genesis);
         assert(consensus.hashGenesisBlock == uint256S("0e3ba94819749c208e2526d9b829e0dba109f1bce4e62600c0fc556294f24c82"));
         assert(genesis.hashMerkleRoot == uint256S("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"));
 
@@ -767,12 +773,12 @@ public:
  * Regression test: intended for private networks only. Has minimal difficulty to ensure that
  * blocks can be found instantly.
  */
-class CScashRegTestParams : public CChainParams
+class CPoolPayRegTestParams : public CChainParams
 {
 public:
-    explicit CScashRegTestParams(const RegTestOptions& opts)
+    explicit CPoolPayRegTestParams(const RegTestOptions& opts)
     {
-        m_chain_type = ChainType::SCASHREGTEST;
+        m_chain_type = ChainType::POOLPAYREGTEST;
         consensus.signet_blocks = false;
         consensus.signet_challenge.clear();
         consensus.nSubsidyHalvingInterval = 150;
@@ -843,7 +849,7 @@ public:
         consensus.nRandomXEpochDuration = 24 * 60 * 60;     // one day
         genesis = CreateGenesisBlock(1296688602, 1, 0x207fffff, 1, 50 * COIN);
         genesis.hashRandomX = uint256S("0x177a9deba97f0dae00a6bf55e03671ec6bce7051d6a5054db49237598b803f93");
-        consensus.hashGenesisBlock = GetHashOfScashGenesisBlock(genesis);
+        consensus.hashGenesisBlock = GetHashOfPoolPayGenesisBlock(genesis);
         assert(consensus.hashGenesisBlock == uint256S("f44d4e3a27c9c0dbd8c6c2596950c782a99ad33f749d296d2a0ab3af84b4cb86"));
         assert(genesis.hashMerkleRoot == uint256S("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"));
 
@@ -876,19 +882,19 @@ public:
     }
 };
 
-std::unique_ptr<const CChainParams> CChainParams::ScashRegTest(const RegTestOptions& options)
+std::unique_ptr<const CChainParams> CChainParams::PoolPayRegTest(const RegTestOptions& options)
 {
-    return std::make_unique<const CScashRegTestParams>(options);
+    return std::make_unique<const CPoolPayRegTestParams>(options);
 }
 
-std::unique_ptr<const CChainParams> CChainParams::ScashTestNet()
+std::unique_ptr<const CChainParams> CChainParams::PoolPayTestNet()
 {
-    return std::make_unique<const CScashTestNetParams>();
+    return std::make_unique<const CPoolPayTestNetParams>();
 }
 
-std::unique_ptr<const CChainParams> CChainParams::ScashMain()
+std::unique_ptr<const CChainParams> CChainParams::PoolPayMain()
 {
-    return std::make_unique<const CScashMainParams>();
+    return std::make_unique<const CPoolPayMainParams>();
 }
 
 // !SCASH END
