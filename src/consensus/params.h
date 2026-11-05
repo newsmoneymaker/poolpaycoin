@@ -166,6 +166,14 @@ struct Params {
         int64_t nPrevBlockTime;
     };
     std::optional<ASERTAnchor> asertAnchorParams;
+    // Optional re-anchor: once active height reaches nASERTReanchorHeight, use asertAnchorParams2
+    // instead of asertAnchorParams. Lets a genesis-anchored ASERT schedule be reset to a later,
+    // real block once enough real chain history exists, without discarding/reindexing the chain --
+    // see PoolPayCoin's own CPoolPayMainParams for why this was needed (a large schedule deficit
+    // accumulated during the slow, single-miner early-launch period kept difficulty pinned at
+    // powLimit far longer than intended once real outside hashrate showed up).
+    int nASERTReanchorHeight = 0;
+    std::optional<ASERTAnchor> asertAnchorParams2;
 
     // !SCASH END
 };

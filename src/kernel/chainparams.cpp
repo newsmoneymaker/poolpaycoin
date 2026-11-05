@@ -618,6 +618,19 @@ public:
             1793707080,   // genesis.nTime (1793707200) - nPowTargetSpacing (120), locked once genesis was mined 2026-11-04
         };
 
+        // Re-anchor fixing a real 2026-11-05 incident: the genesis anchor accumulated a huge schedule
+        // deficit (~30 hours) during the slow single-miner early-launch period, which then kept
+        // difficulty pinned at powLimit far too long once real outside hashrate (a third-party miner)
+        // showed up -- the whole point of fast ASERT was defeated by the from-genesis deficit. Resets
+        // the schedule clock to zero as of block 188 (the real tip when this was deployed) without
+        // discarding any chain history. Height 189 is the first block height to use the new anchor.
+        consensus.nASERTReanchorHeight = 189;
+        consensus.asertAnchorParams2 = Consensus::Params::ASERTAnchor{
+            188,          // anchor block height = real chain tip at the time of this fix
+            0x1e0fffff,   // block 188's own real nBits
+            1793836396,   // block 187's (anchor's parent) real timestamp
+        };
+
         /**
          * The message start string is designed to be unlikely to occur in normal data.
          * Freshly generated for this chain (openssl rand -hex 4, 2026-11-03) -- NOT scash's or any other

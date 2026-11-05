@@ -284,6 +284,12 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     // Use ASERT DAA if activated, otherwise use legacy Bitcoin DAA
     if (params.asertAnchorParams) {
         if (pindexLast->nHeight + 1 >= params.nASERTActivationHeight) {
+            // Height-gated re-anchor: below nASERTReanchorHeight, every already-connected historical
+            // block keeps using the ORIGINAL anchor it was actually validated against (required so a
+            // full reindex replays the exact same history); at/after it, the new anchor applies.
+            if (params.asertAnchorParams2 && pindexLast->nHeight + 1 >= params.nASERTReanchorHeight) {
+                return GetNextASERTWorkRequired(pindexLast, pblock, params, *params.asertAnchorParams2);
+            }
             return GetNextASERTWorkRequired(pindexLast, pblock, params, *params.asertAnchorParams);
         }
     }
