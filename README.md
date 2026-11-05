@@ -10,7 +10,7 @@ by the team behind [pool-pay.com](https://pool-pay.com/).
 - **Mining pool:** https://ppc.pool-pay.com/ ([pool source](https://github.com/newsmoneymaker/ppc-nodejs-pool))
 - **Block explorer:** https://explorer.pool-pay.com/
 - **Miner (poolpayminer, `rx/pp` support):** https://github.com/newsmoneymaker/poolpayminer
-- **Pre-built node binaries (Linux x64, no build needed):** https://github.com/newsmoneymaker/poolpaycoin/releases/tag/v1.0.0
+- **Pre-built node binaries (Linux x64 and Windows x64, no build needed):** https://github.com/newsmoneymaker/poolpaycoin/releases/tag/v1.0.0
 
 See the white paper above for the full technical writeup (supply/emission, the `rx/pp`
 RandomX construction, the ASERT-from-genesis difficulty rationale, and an honest caveat
