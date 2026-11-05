@@ -21,6 +21,17 @@ base -- see the repository's git history for the exact PoolPayCoin-specific chan
 top of that base (own genesis/chain params, real 10 PPC subsidy, the ASERT-from-genesis
 fix, and the project's own RandomX salt).
 
+**Connecting your own node:** PoolPayCoin is brand new and doesn't have DNS seeds yet
+(there's no established seed infrastructure for a chain this young). If your node starts
+with 0 peers, add our node explicitly in your `poolpay.conf` (or as a command-line flag):
+
+```
+addnode=95.216.18.84:8350
+```
+
+or `poolpaycoind -addnode=95.216.18.84:8350`. That's our own pool/explorer node and is
+currently the only well-known public peer on the network.
+
 Everything below this point is upstream Bitcoin Core's own generic documentation.
 
 Bitcoin Core integration/staging tree
