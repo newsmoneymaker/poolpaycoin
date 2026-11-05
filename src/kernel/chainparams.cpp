@@ -656,6 +656,11 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
+        // No real DNS seed infrastructure exists yet for a chain this young -- this is just our
+        // own pool/explorer node's own A record, used as a DNS seed so a fresh node has at least
+        // one real peer out of the box instead of silently sitting at 0 connections (found
+        // 2026-11-05: a real third-party miner couldn't find any peers for their own node).
+        vSeeds.emplace_back("ppc.pool-pay.com.");
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,55);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,20);
