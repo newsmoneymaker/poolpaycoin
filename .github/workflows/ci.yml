@@ -91,7 +91,7 @@ jobs:
 
       - name: Clang version
         run: |
-          sudo xcode-select --switch /Applications/Xcode_15.0.app
+          sudo xcode-select --switch /Applications/Xcode_16.app
           clang --version
 
       - name: Install Homebrew packages
@@ -174,7 +174,7 @@ jobs:
         shell: cmd
         run: |
           curl --fail --location --output C:\qt-src.zip %CI_QT_URL%
-          choco install --yes --no-progress jom
+          choco install --yes --no-progress jom || choco install --yes --no-progress jom || choco install --yes --no-progress jom
 
       - name: Build static Qt. Expand source archive
         if: steps.static-qt-cache.outputs.cache-hit != 'true'
