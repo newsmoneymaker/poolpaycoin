@@ -78,4 +78,3 @@ jobs:
   # depends build failed its own C-conformance check under Xcode 16. Neither is a path we use,
   # so fixing them would mean maintaining an unused build system rather than a real release.
 
-# ci-test: verifying the test-each-commit job after CI fixes (commit 1/2)
