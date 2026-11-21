@@ -16,7 +16,7 @@
 #include <type_traits>
 
 // !SCASH
-const std::string CURRENCY_UNIT = "SCASH"; // One formatted unit
+const std::string CURRENCY_UNIT = "PPC"; // One formatted unit
 // !SCASH END
 const std::string CURRENCY_ATOM = "sat"; // One indivisible minimum value unit
 

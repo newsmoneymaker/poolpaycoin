@@ -33,9 +33,9 @@ QString BitcoinUnits::longName(Unit unit)
 {
     switch (unit) {
     // !SCASH
-    case Unit::BTC: return QString("SCASH");
-    case Unit::mBTC: return QString("mSCASH");
-    case Unit::uBTC: return QString::fromUtf8("µSCASH (bits)");
+    case Unit::BTC: return QString("PPC");
+    case Unit::mBTC: return QString("mPPC");
+    case Unit::uBTC: return QString::fromUtf8("µPPC (bits)");
     // !SCASH END
     case Unit::SAT: return QString("Satoshi (sat)");
     } // no default case, so the compiler can warn about missing cases
@@ -57,9 +57,9 @@ QString BitcoinUnits::description(Unit unit)
 {
     switch (unit) {
     // !SCASH
-    case Unit::BTC: return QString("Scash");
-    case Unit::mBTC: return QString("Milli-Scash (1 / 1" THIN_SP_UTF8 "000)");
-    case Unit::uBTC: return QString("Micro-Scash (bits) (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    case Unit::BTC: return QString("PoolPayCoin");
+    case Unit::mBTC: return QString("Milli-PoolPayCoin (1 / 1" THIN_SP_UTF8 "000)");
+    case Unit::uBTC: return QString("Micro-PoolPayCoin (bits) (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
     // !SCASH END
     case Unit::SAT: return QString("Satoshi (sat) (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
     } // no default case, so the compiler can warn about missing cases
