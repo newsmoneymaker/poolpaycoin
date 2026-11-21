@@ -228,7 +228,7 @@ RPCHelpMan sendtoaddress()
         HELP_REQUIRING_PASSPHRASE,
                 {
                     // !SCASH
-                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Scash address to send to."},
+                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The PoolPayCoin address to send to."},
                     // !SCASH END
                     {"amount", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "The amount in " + CURRENCY_UNIT + " to send. eg 0.1"},
                     {"comment", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "A comment used to store what the transaction is for.\n"
@@ -238,7 +238,7 @@ RPCHelpMan sendtoaddress()
                                          "transaction, just kept in your wallet."},
                     {"subtractfeefromamount", RPCArg::Type::BOOL, RPCArg::Default{false}, "The fee will be deducted from the amount being sent.\n"
                     // !SCASH
-                                         "The recipient will receive less Scash than you enter in the amount field."},
+                                         "The recipient will receive less PoolPayCoin than you enter in the amount field."},
                     // !SCASH END
                     {"replaceable", RPCArg::Type::BOOL, RPCArg::DefaultHint{"wallet default"}, "Signal that this transaction can be replaced by a transaction (BIP 125)"},
                     {"conf_target", RPCArg::Type::NUM, RPCArg::DefaultHint{"wallet -txconfirmtarget"}, "Confirmation target in blocks"},
@@ -263,15 +263,15 @@ RPCHelpMan sendtoaddress()
                 },
                 RPCExamples{
                     // !SCASH
-                    "\nSend 0.1 SCASH\n"
+                    "\nSend 0.1 PPC\n"
                     + HelpExampleCli("sendtoaddress", "\"" + EXAMPLE_ADDRESS[0] + "\" 0.1") +
-                    "\nSend 0.1 SCASH with a confirmation target of 6 blocks in economical fee estimate mode using positional arguments\n"
+                    "\nSend 0.1 PPC with a confirmation target of 6 blocks in economical fee estimate mode using positional arguments\n"
                     + HelpExampleCli("sendtoaddress", "\"" + EXAMPLE_ADDRESS[0] + "\" 0.1 \"donation\" \"sean's outpost\" false true 6 economical") +
-                    "\nSend 0.1 SCASH with a fee rate of 1.1 " + CURRENCY_ATOM + "/vB, subtract fee from amount, BIP125-replaceable, using positional arguments\n"
+                    "\nSend 0.1 PPC with a fee rate of 1.1 " + CURRENCY_ATOM + "/vB, subtract fee from amount, BIP125-replaceable, using positional arguments\n"
                     + HelpExampleCli("sendtoaddress", "\"" + EXAMPLE_ADDRESS[0] + "\" 0.1 \"drinks\" \"room77\" true true null \"unset\" null 1.1") +
-                    "\nSend 0.2 SCASH with a confirmation target of 6 blocks in economical fee estimate mode using named arguments\n"
+                    "\nSend 0.2 PPC with a confirmation target of 6 blocks in economical fee estimate mode using named arguments\n"
                     + HelpExampleCli("-named sendtoaddress", "address=\"" + EXAMPLE_ADDRESS[0] + "\" amount=0.2 conf_target=6 estimate_mode=\"economical\"") +
-                    "\nSend 0.5 SCASH with a fee rate of 25 " + CURRENCY_ATOM + "/vB using named arguments\n"
+                    "\nSend 0.5 PPC with a fee rate of 25 " + CURRENCY_ATOM + "/vB using named arguments\n"
                     // !SCASH END
                     + HelpExampleCli("-named sendtoaddress", "address=\"" + EXAMPLE_ADDRESS[0] + "\" amount=0.5 fee_rate=25")
                     + HelpExampleCli("-named sendtoaddress", "address=\"" + EXAMPLE_ADDRESS[0] + "\" amount=0.5 fee_rate=25 subtractfeefromamount=false replaceable=true avoid_reuse=true comment=\"2 pizzas\" comment_to=\"jeremy\" verbose=true")
@@ -334,7 +334,7 @@ RPCHelpMan sendmany()
                     {"amounts", RPCArg::Type::OBJ_USER_KEYS, RPCArg::Optional::NO, "The addresses and amounts",
                         {
                             // !SCASH
-                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "The Scash address is the key, the numeric amount (can be string) in " + CURRENCY_UNIT + " is the value"},
+                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "The PoolPayCoin address is the key, the numeric amount (can be string) in " + CURRENCY_UNIT + " is the value"},
                             // !SCASH END
                         },
                     },
@@ -343,7 +343,7 @@ RPCHelpMan sendmany()
                     {"subtractfeefrom", RPCArg::Type::ARR, RPCArg::Optional::OMITTED, "The addresses.\n"
                                        "The fee will be equally deducted from the amount of each selected address.\n"
                                        // !SCASH
-                                       "Those recipients will receive less Scash than you enter in their corresponding amount field.\n"
+                                       "Those recipients will receive less PoolPayCoin than you enter in their corresponding amount field.\n"
                                        // !SCASH END
                                        "If no addresses are specified here, the sender pays the fee.",
                         {
@@ -559,7 +559,7 @@ CreatedTransactionResult FundTransaction(CWallet& wallet, const CMutableTransact
 
             if (!IsValidDestination(dest)) {
                 // !SCASH
-                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Change address must be a valid Scash address");
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Change address must be a valid PoolPayCoin address");
                 // !SCASH END
             }
 
@@ -769,7 +769,7 @@ RPCHelpMan fundrawtransaction()
                             {"minconf", RPCArg::Type::NUM, RPCArg::Default{0}, "If add_inputs is specified, require inputs with at least this many confirmations."},
                             {"maxconf", RPCArg::Type::NUM, RPCArg::Optional::OMITTED, "If add_inputs is specified, require inputs with at most this many confirmations."},
                             // !SCASH
-                            {"changeAddress", RPCArg::Type::STR, RPCArg::DefaultHint{"automatic"}, "The Scash address to receive the change"},
+                            {"changeAddress", RPCArg::Type::STR, RPCArg::DefaultHint{"automatic"}, "The PoolPayCoin address to receive the change"},
                             // !SCASH END
                             {"changePosition", RPCArg::Type::NUM, RPCArg::DefaultHint{"random"}, "The index of the change output"},
                             {"change_type", RPCArg::Type::STR, RPCArg::DefaultHint{"set by -changetype"}, "The output type to use. Only valid if changeAddress is not specified. Options are \"legacy\", \"p2sh-segwit\", \"bech32\", and \"bech32m\"."},
@@ -782,7 +782,7 @@ RPCHelpMan fundrawtransaction()
                             {"subtractFeeFromOutputs", RPCArg::Type::ARR, RPCArg::Default{UniValue::VARR}, "The integers.\n"
                                                           "The fee will be equally deducted from the amount of each specified output.\n"
                                                           // !SCASH
-                                                          "Those recipients will receive less Scash than you enter in their corresponding amount field.\n"
+                                                          "Those recipients will receive less PoolPayCoin than you enter in their corresponding amount field.\n"
                                                           // !SCASH END
                                                           "If no outputs are specified here, the sender pays the fee.",
                                 {
@@ -982,7 +982,7 @@ static std::vector<RPCArg> OutputsDoc()
         {"", RPCArg::Type::OBJ_USER_KEYS, RPCArg::Optional::OMITTED, "",
             {
                 // !SCASH
-                {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the Scash address,\n"
+                {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the PoolPayCoin address,\n"
                 // !SCASH END
                          "the value (float or string) is the amount in " + CURRENCY_UNIT + ""},
             },
@@ -1237,7 +1237,7 @@ RPCHelpMan send()
                     {"maxconf", RPCArg::Type::NUM, RPCArg::Optional::OMITTED, "If add_inputs is specified, require inputs with at most this many confirmations."},
                     {"add_to_wallet", RPCArg::Type::BOOL, RPCArg::Default{true}, "When false, returns a serialized transaction which will not be added to the wallet or broadcast"},
                     // !SCASH
-                    {"change_address", RPCArg::Type::STR, RPCArg::DefaultHint{"automatic"}, "The Scash address to receive the change"},
+                    {"change_address", RPCArg::Type::STR, RPCArg::DefaultHint{"automatic"}, "The PoolPayCoin address to receive the change"},
                     // !SCASH END
                     {"change_position", RPCArg::Type::NUM, RPCArg::DefaultHint{"random"}, "The index of the change output"},
                     {"change_type", RPCArg::Type::STR, RPCArg::DefaultHint{"set by -changetype"}, "The output type to use. Only valid if change_address is not specified. Options are \"legacy\", \"p2sh-segwit\", \"bech32\" and \"bech32m\"."},
@@ -1263,7 +1263,7 @@ RPCHelpMan send()
                     {"subtract_fee_from_outputs", RPCArg::Type::ARR, RPCArg::Default{UniValue::VARR}, "Outputs to subtract the fee from, specified as integer indices.\n"
                     "The fee will be equally deducted from the amount of each specified output.\n"
                     // !SCASH
-                    "Those recipients will receive less Scash than you enter in their corresponding amount field.\n"
+                    "Those recipients will receive less PoolPayCoin than you enter in their corresponding amount field.\n"
                     // !SCASH END
                     "If no outputs are specified here, the sender pays the fee.",
                         {
@@ -1340,12 +1340,12 @@ RPCHelpMan sendall()
                 "Optionally some recipients can be specified with an amount to perform payments, but at least one address must appear without a specified amount.\n",
                 {
                     // !SCASH
-                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "A Scash address which receives an equal share of the unspecified amount."},
+                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "A PoolPayCoin address which receives an equal share of the unspecified amount."},
                     // !SCASH END
                     {"", RPCArg::Type::OBJ_USER_KEYS, RPCArg::Optional::OMITTED, "",
                         {
                             // !SCASH
-                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the Scash address, the value (float or string) is the amount in " + CURRENCY_UNIT + ""},
+                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the PoolPayCoin address, the value (float or string) is the amount in " + CURRENCY_UNIT + ""},
                             // !SCASH END
                         },
                     },
@@ -1709,7 +1709,7 @@ RPCHelpMan walletcreatefundedpsbt()
                             {"minconf", RPCArg::Type::NUM, RPCArg::Default{0}, "If add_inputs is specified, require inputs with at least this many confirmations."},
                             {"maxconf", RPCArg::Type::NUM, RPCArg::Optional::OMITTED, "If add_inputs is specified, require inputs with at most this many confirmations."},
                             // !SCASH
-                            {"changeAddress", RPCArg::Type::STR, RPCArg::DefaultHint{"automatic"}, "The Scash address to receive the change"},
+                            {"changeAddress", RPCArg::Type::STR, RPCArg::DefaultHint{"automatic"}, "The PoolPayCoin address to receive the change"},
                             // !SCASH END
                             {"changePosition", RPCArg::Type::NUM, RPCArg::DefaultHint{"random"}, "The index of the change output"},
                             {"change_type", RPCArg::Type::STR, RPCArg::DefaultHint{"set by -changetype"}, "The output type to use. Only valid if changeAddress is not specified. Options are \"legacy\", \"p2sh-segwit\", \"bech32\", and \"bech32m\"."},
@@ -1719,7 +1719,7 @@ RPCHelpMan walletcreatefundedpsbt()
                             {"feeRate", RPCArg::Type::AMOUNT, RPCArg::DefaultHint{"not set, fall back to wallet fee estimation"}, "Specify a fee rate in " + CURRENCY_UNIT + "/kvB."},
                             {"subtractFeeFromOutputs", RPCArg::Type::ARR, RPCArg::Default{UniValue::VARR}, "The outputs to subtract the fee from.\n"
                                                           "The fee will be equally deducted from the amount of each specified output.\n"
-                                                          "Those recipients will receive less Scash than you enter in their corresponding amount field.\n"
+                                                          "Those recipients will receive less PoolPayCoin than you enter in their corresponding amount field.\n"
                                                           "If no outputs are specified here, the sender pays the fee.",
                                 {
                                     {"vout_index", RPCArg::Type::NUM, RPCArg::Optional::OMITTED, "The zero-based output index, before a change output is added."},

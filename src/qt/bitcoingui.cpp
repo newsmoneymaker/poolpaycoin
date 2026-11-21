@@ -260,7 +260,7 @@ void BitcoinGUI::createActions()
 
     sendCoinsAction = new QAction(platformStyle->SingleColorIcon(":/icons/send"), tr("&Send"), this);
     // !SCASH
-    sendCoinsAction->setStatusTip(tr("Send coins to a Scash address"));
+    sendCoinsAction->setStatusTip(tr("Send coins to a PoolPayCoin address"));
     // !SCASH END
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
@@ -269,7 +269,7 @@ void BitcoinGUI::createActions()
 
     receiveCoinsAction = new QAction(platformStyle->SingleColorIcon(":/icons/receiving_addresses"), tr("&Receive"), this);
     // !SCASH
-    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and scash: URIs)"));
+    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and poolpaycoin: URIs)"));
     // !SCASH END
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
@@ -321,13 +321,13 @@ void BitcoinGUI::createActions()
     changePassphraseAction->setStatusTip(tr("Change the passphrase used for wallet encryption"));
     signMessageAction = new QAction(tr("Sign &message…"), this);
     // !SCASH
-    signMessageAction->setStatusTip(tr("Sign messages with your Scash addresses to prove you own them"));
+    signMessageAction->setStatusTip(tr("Sign messages with your PoolPayCoin addresses to prove you own them"));
     verifyMessageAction = new QAction(tr("&Verify message…"), this);
-    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Scash addresses"));
+    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified PoolPayCoin addresses"));
     m_load_psbt_action = new QAction(tr("&Load PSBT from file…"), this);
-    m_load_psbt_action->setStatusTip(tr("Load Partially Signed Scash Transaction"));
+    m_load_psbt_action->setStatusTip(tr("Load Partially Signed PoolPayCoin Transaction"));
     m_load_psbt_clipboard_action = new QAction(tr("Load PSBT from &clipboard…"), this);
-    m_load_psbt_clipboard_action->setStatusTip(tr("Load Partially Signed Scash Transaction from clipboard"));
+    m_load_psbt_clipboard_action->setStatusTip(tr("Load Partially Signed PoolPayCoin Transaction from clipboard"));
     // !SCASH END
 
     openRPCConsoleAction = new QAction(tr("Node window"), this);
@@ -343,7 +343,7 @@ void BitcoinGUI::createActions()
 
     openAction = new QAction(tr("Open &URI…"), this);
     // !SCASH
-    openAction->setStatusTip(tr("Open a scash: URI"));
+    openAction->setStatusTip(tr("Open a poolpaycoin: URI"));
     // !SCASH END
 
     m_open_wallet_action = new QAction(tr("Open Wallet"), this);
@@ -374,7 +374,7 @@ void BitcoinGUI::createActions()
     showHelpMessageAction = new QAction(tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
     // !SCASH
-    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Scash command-line options").arg(PACKAGE_NAME));
+    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible PoolPayCoin command-line options").arg(PACKAGE_NAME));
     // !SCASH END
 
     m_mask_values_action = new QAction(tr("&Mask values"), this);
@@ -1016,7 +1016,7 @@ void BitcoinGUI::updateNetworkState()
     if (m_node.getNetworkActive()) {
         //: A substring of the tooltip.
         // !SCASH
-        tooltip = tr("%n active connection(s) to Scash network.", "", count);
+        tooltip = tr("%n active connection(s) to PoolPayCoin network.", "", count);
         // !SCASH END
     } else {
         //: A substring of the tooltip.

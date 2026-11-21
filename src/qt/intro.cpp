@@ -137,7 +137,7 @@ Intro::Intro(QWidget *parent, int64_t blockchain_size_gb, int64_t chain_state_si
         .arg(m_blockchain_size_gb)
         .arg(2009)
         // !SCASH
-        .arg(tr("Scash"))
+        .arg(tr("PoolPayCoin"))
         // !SCASH END
     );
     ui->lblExplanation2->setText(ui->lblExplanation2->text().arg(PACKAGE_NAME));
@@ -394,7 +394,7 @@ void Intro::UpdatePruneLabels(bool prune_checked)
         tr("(sufficient to restore backups %n day(s) old)", "", expected_backup_days));
     ui->sizeWarningLabel->setText(
         // !SCASH
-        tr("%1 will download and store a copy of the Scash block chain.").arg(PACKAGE_NAME) + " " +
+        tr("%1 will download and store a copy of the PoolPayCoin block chain.").arg(PACKAGE_NAME) + " " +
         // !SCASH END
         storageRequiresMsg.arg(m_required_space_gb) + " " +
         tr("The wallet will also be stored in this directory.")

@@ -119,7 +119,7 @@ std::vector<std::pair<CTxDestination, CAmount>> ParseOutputs(const UniValue& out
             CAmount amount{AmountFromValue(outputs[name_])};
             if (!IsValidDestination(destination)) {
                 // !SCASH
-                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Scash address: ") + name_);
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid PoolPayCoin address: ") + name_);
                 // !SCASH END
             }
 

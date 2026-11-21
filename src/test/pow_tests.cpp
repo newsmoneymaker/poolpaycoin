@@ -256,10 +256,10 @@ BOOST_AUTO_TEST_CASE(Check_Epoch_Calculation)
 BOOST_AUTO_TEST_CASE(Check_RandomX_Key_Generation)
 {
     // RandomX key is sha256d of seed string where the epoch number changes
-    // "Scash/RandomX/Epoch/1"
+    // "PoolPay/RandomX/Epoch/1"
     uint256 hash = GetSeedHash(1);
     BOOST_CHECK_EQUAL(hash, uint256S("ccbde830c787b2061cbd9515d9c83d411fcf04cc6e1e47dcc3903c0dee4b1536"));
-    // "Scash/RandomX/Epoch/999"
+    // "PoolPay/RandomX/Epoch/999"
     hash = GetSeedHash(999);
     BOOST_CHECK_EQUAL(hash, uint256S("b8ea6d0f30d6f7250bd8f2f62c9d83a61e1391e14cff95888db3a89bbdd183d5"));
 }
@@ -271,7 +271,7 @@ BOOST_AUTO_TEST_CASE(Check_RandomX_BlockHeader)
     const auto chainParams = CreateChainParams(*m_node.args, ChainType::POOLPAYTESTNET);
     const auto consensus = chainParams->GetConsensus();
 
-    // Sanity check: block header GetHash() function includes RandomX field when running as Scash
+    // Sanity check: block header GetHash() function includes RandomX field when running as PoolPayCoin
     assert(!g_isRandomX);
     BOOST_CHECK_NE(consensus.hashGenesisBlock, chainParams->GenesisBlock().GetHash());
     g_isRandomX = true;

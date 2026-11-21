@@ -220,7 +220,7 @@ void DebugMessageHandler(QtMsgType type, const QMessageLogContext& context, cons
 
 static int qt_argc = 1;
 // !SCASH
-static const char* qt_argv = "scash-qt";
+static const char* qt_argv = "poolpaycoin-qt";
 // !SCASH END
 
 BitcoinApplication::BitcoinApplication()

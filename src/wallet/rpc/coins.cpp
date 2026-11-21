@@ -31,7 +31,7 @@ static CAmount GetReceived(const CWallet& wallet, const UniValue& params, bool b
         CTxDestination dest = DecodeDestination(params[0].get_str());
         if (!IsValidDestination(dest)) {
             // !SCASH
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Scash address");
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PoolPayCoin address");
             // !SCASH END
         }
         addresses.emplace_back(dest);
@@ -587,7 +587,7 @@ RPCHelpMan listunspent()
             CTxDestination dest = DecodeDestination(input.get_str());
             if (!IsValidDestination(dest)) {
                 // !SCASH
-                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Scash address: ") + input.get_str());
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid PoolPayCoin address: ") + input.get_str());
                 // !SCASH END
             }
             if (!destinations.insert(dest).second) {

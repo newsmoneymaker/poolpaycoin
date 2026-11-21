@@ -21,7 +21,7 @@ static RPCHelpMan verifymessage()
         "Verify a signed message.",
         {
             // !SCASH
-            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Scash address to use for the signature."},
+            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The PoolPayCoin address to use for the signature."},
             // !SCASH END
             {"signature", RPCArg::Type::STR, RPCArg::Optional::NO, "The signature provided by the signer in base 64 encoding (see signmessage)."},
             {"message", RPCArg::Type::STR, RPCArg::Optional::NO, "The message that was signed."},

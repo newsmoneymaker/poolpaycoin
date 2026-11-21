@@ -143,7 +143,7 @@ RPCHelpMan setlabel()
     CTxDestination dest = DecodeDestination(request.params[0].get_str());
     if (!IsValidDestination(dest)) {
         // !SCASH
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Scash address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PoolPayCoin address");
         // !SCASH END
     }
 

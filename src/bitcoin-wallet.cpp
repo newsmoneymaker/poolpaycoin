@@ -63,7 +63,7 @@ static std::optional<int> WalletAppInit(ArgsManager& args, int argc, char* argv[
     const bool missing_args{argc < 2};
     if (missing_args || HelpRequested(args) || args.IsArgSet("-version")) {
         // !SCASH
-        std::string strUsage = strprintf("%s scash-wallet version", PACKAGE_NAME) + " " + FormatFullVersion() + "\n";
+        std::string strUsage = strprintf("%s poolpaycoin-wallet version", PACKAGE_NAME) + " " + FormatFullVersion() + "\n";
         // !SCASH END
 
         if (args.IsArgSet("-version")) {
@@ -71,11 +71,11 @@ static std::optional<int> WalletAppInit(ArgsManager& args, int argc, char* argv[
         } else {
             strUsage += "\n"
                         // !SCASH
-                        "scash-wallet is an offline tool for creating and interacting with " PACKAGE_NAME " wallet files.\n"
-                        "By default scash-wallet will act on wallets in the default mainnet wallet directory in the datadir.\n"
+                        "poolpaycoin-wallet is an offline tool for creating and interacting with " PACKAGE_NAME " wallet files.\n"
+                        "By default poolpaycoin-wallet will act on wallets in the default mainnet wallet directory in the datadir.\n"
                         "To change the target wallet, use the -datadir, -wallet and -regtest/-signet/-testnet arguments.\n\n"
                         "Usage:\n"
-                        "  scash-wallet [options] <command>\n";
+                        "  poolpaycoin-wallet [options] <command>\n";
                         // !SCASH END
             strUsage += "\n" + args.GetHelpMessage();
         }
@@ -129,7 +129,7 @@ MAIN_FUNCTION
     const auto command = args.GetCommand();
     if (!command) {
         // !SCASH
-        tfm::format(std::cerr, "No method provided. Run `scash-wallet -help` for valid methods.\n");
+        tfm::format(std::cerr, "No method provided. Run `poolpaycoin-wallet -help` for valid methods.\n");
         // !SCASH END
         return EXIT_FAILURE;
     }

@@ -93,14 +93,14 @@ AddressBookPage::AddressBookPage(const PlatformStyle *platformStyle, Mode _mode,
     {
     case SendingTab:
         // !SCASH
-        ui->labelExplanation->setText(tr("These are your Scash addresses for sending payments. Always check the amount and the receiving address before sending coins."));
+        ui->labelExplanation->setText(tr("These are your PoolPayCoin addresses for sending payments. Always check the amount and the receiving address before sending coins."));
         // !SCASH END
         ui->deleteAddress->setVisible(true);
         ui->newAddress->setVisible(true);
         break;
     case ReceivingTab:
         // !SCASH
-        ui->labelExplanation->setText(tr("These are your Scash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.\nSigning is only possible with addresses of the type 'legacy'."));
+        ui->labelExplanation->setText(tr("These are your PoolPayCoin addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.\nSigning is only possible with addresses of the type 'legacy'."));
         // !SCASH END
         ui->deleteAddress->setVisible(false);
         ui->newAddress->setVisible(false);

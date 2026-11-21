@@ -307,7 +307,7 @@ RPCHelpMan importaddress()
             pwallet->ImportScriptPubKeys(strLabel, scripts, /*have_solving_data=*/false, /*apply_label=*/true, /*timestamp=*/1);
         } else {
             // !SCASH
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Scash address or script");
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PoolPayCoin address or script");
             // !SCASH END
         }
     }
@@ -674,7 +674,7 @@ RPCHelpMan dumpprivkey()
     CTxDestination dest = DecodeDestination(strAddress);
     if (!IsValidDestination(dest)) {
         // !SCASH
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Scash address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PoolPayCoin address");
         // !SCASH END
     }
     auto keyid = GetKeyForDestination(spk_man, dest);

@@ -102,7 +102,7 @@ void AskPassphraseDialog::accept()
         }
         QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm wallet encryption"),
                  // !SCASH
-                 tr("Warning: If you encrypt your wallet and lose your passphrase, you will <b>LOSE ALL OF YOUR SCASH</b>!") + "<br><br>" + tr("Are you sure you wish to encrypt your wallet?"),
+                 tr("Warning: If you encrypt your wallet and lose your passphrase, you will <b>LOSE ALL OF YOUR POOLPAYCOIN</b>!") + "<br><br>" + tr("Are you sure you wish to encrypt your wallet?"),
                  // !SCASH END
                  QMessageBox::Yes|QMessageBox::Cancel,
                  QMessageBox::Cancel);
@@ -112,7 +112,7 @@ void AskPassphraseDialog::accept()
             {
                 QString encryption_reminder = tr("Remember that encrypting your wallet cannot fully protect "
                 // !SCASH
-                "your SCASH from being stolen by malware infecting your computer.");
+                "your PoolPayCoin from being stolen by malware infecting your computer.");
                 // !SCASH END
                 if (m_passphrase_out) {
                     m_passphrase_out->assign(newpass1);

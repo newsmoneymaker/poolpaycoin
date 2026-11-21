@@ -135,7 +135,7 @@ void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
     // !SCASH
-    widget->setPlaceholderText(QObject::tr("Enter a Scash address (e.g. %1)").arg(
+    widget->setPlaceholderText(QObject::tr("Enter a PoolPayCoin address (e.g. %1)").arg(
     // !SCASH END
         QString::fromStdString(DummyAddress(Params()))));
     widget->setValidator(new BitcoinAddressEntryValidator(parent));
@@ -151,7 +151,7 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
     // return if URI is not valid or is no bitcoin: URI
     // !SCASH
-    if(!uri.isValid() || uri.scheme() != QString("scash"))
+    if(!uri.isValid() || uri.scheme() != QString("poolpaycoin"))
         return false;
     // !SCASH END
 
@@ -216,7 +216,7 @@ QString formatBitcoinURI(const SendCoinsRecipient &info)
     bool bech_32 = info.address.startsWith(QString::fromStdString(Params().Bech32HRP() + "1"));
 
     // !SCASH
-    QString ret = QString("scash:%1").arg(bech_32 ? info.address.toUpper() : info.address);
+    QString ret = QString("poolpaycoin:%1").arg(bech_32 ? info.address.toUpper() : info.address);
     // !SCASH END
     int paramCount = 0;
 
@@ -517,8 +517,8 @@ fs::path static StartupShortcutPath()
     ChainType chain = gArgs.GetChainType();
     // !SCASH
     if (chain == ChainType::POOLPAYMAIN)
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "Scash.lnk";
-    return GetSpecialFolderPath(CSIDL_STARTUP) / fs::u8path(strprintf("Scash (%s).lnk", ChainTypeToString(chain)));
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "PoolPayCoin.lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / fs::u8path(strprintf("PoolPayCoin (%s).lnk", ChainTypeToString(chain)));
     // !SCASH END
 }
 
@@ -600,8 +600,8 @@ fs::path static GetAutostartFilePath()
     ChainType chain = gArgs.GetChainType();
     // !SCASH
     if (chain == ChainType::POOLPAYMAIN)
-        return GetAutostartDir() / "scash.desktop";
-    return GetAutostartDir() / fs::u8path(strprintf("scash-%s.desktop", ChainTypeToString(chain)));
+        return GetAutostartDir() / "poolpaycoin.desktop";
+    return GetAutostartDir() / fs::u8path(strprintf("poolpaycoin-%s.desktop", ChainTypeToString(chain)));
     // !SCASH END
 }
 
@@ -648,9 +648,9 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         optionFile << "Type=Application\n";
         // !SCASH
         if (chain == ChainType::POOLPAYMAIN)
-            optionFile << "Name=Scash\n";
+            optionFile << "Name=PoolPayCoin\n";
         else
-            optionFile << strprintf("Name=Scash (%s)\n", ChainTypeToString(chain));
+            optionFile << strprintf("Name=PoolPayCoin (%s)\n", ChainTypeToString(chain));
         // !SCASH END
         optionFile << "Exec=" << pszExePath << strprintf(" -min -chain=%s\n", ChainTypeToString(chain));
         optionFile << "Terminal=false\n";

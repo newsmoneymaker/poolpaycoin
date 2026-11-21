@@ -493,7 +493,7 @@ static RPCHelpMan getaddednodeinfo()
                                 {RPCResult::Type::OBJ, "", "",
                                 {
                                     // !SCASH
-                                    {RPCResult::Type::STR, "address", "The Scash server IP and port we're connected to"},
+                                    {RPCResult::Type::STR, "address", "The PoolPayCoin server IP and port we're connected to"},
                                     // !SCASH END
                                     {RPCResult::Type::STR, "connected", "connection, inbound or outbound"},
                                 }},
