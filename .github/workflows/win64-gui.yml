@@ -1,0 +1,43 @@
+name: build-win64-gui
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools and mingw cross compiler
+        run: |
+          sudo -S -p '' apt-get update
+          sudo -S -p '' apt-get install -y build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 curl ca-certificates git cmake g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64
+          sudo -S -p '' update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
+          sudo -S -p '' update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+
+      - name: Qt mirror path fix
+        run: |
+          # Qt 5.15.11 tarballs are no longer under official_releases (404); archive still has them.
+          # Credit: this fix (and the idea of shipping a GUI build at all) comes from a community
+          # contribution by xenathewarrior10 (Discord) / conniegoodall (GitHub), verified and adopted
+          # into the official release process 2026-11-24.
+          sed -i 's#official_releases#archive#' depends/packages/qt.mk
+
+      - name: Build depends with Qt
+        run: make -C depends -j$(nproc) HOST=x86_64-w64-mingw32
+
+      - name: autogen
+        run: ./autogen.sh
+
+      - name: configure
+        run: ./configure --prefix=$PWD/depends/x86_64-w64-mingw32 --disable-tests --disable-bench --disable-fuzz-binary --without-miniupnpc --without-natpmp
+
+      - name: make
+        run: make -j$(nproc)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: poolpaycoin-win64-gui
+          path: |
+            src/qt/bitcoin-qt.exe
+            src/poolpaycoind.exe
+            src/poolpaycoin-cli.exe
